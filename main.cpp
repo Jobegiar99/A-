@@ -3,7 +3,6 @@
 #include <math.h>
 #include <chrono>
 #include <thread>
-#include <map>
 #include<stdlib.h>
 
 using namespace std::this_thread; // sleep_for, sleep_until
@@ -25,8 +24,6 @@ struct Path{
 	Path* previous = nullptr;
 	Path(Point p): point(p){};
 };
-
-map<Point,Point> path;
 
 Path* obtainSmallestFValuePoint(vector<Path*>& open){
 	Path* currentBest = open[0];
@@ -129,7 +126,8 @@ void drawPath(Path* bestOption, vector<vector<string>> matrix){
 	Path* p = bestOption;
 	while ( p ){
 
-		matrix[ p->point.xPos ] [p -> point.yPos ] = "x";
+
+		matrix[ p->point.xPos ] [p -> point.yPos ] = "X";
 		p = p -> previous;
 	}
 	for(int i = 0 ; i < matrix.size(); i++ ){
@@ -140,7 +138,7 @@ void drawPath(Path* bestOption, vector<vector<string>> matrix){
 	}
 	cout<<"-------------------"<<endl;
 	auto const start_time = std::chrono::steady_clock::now();
-	auto const wait_time = std::chrono::milliseconds{300};
+	auto const wait_time = std::chrono::milliseconds{200};
 	auto next_time = start_time + wait_time; // regularly updated time point
 	std::this_thread::sleep_until(next_time);
     next_time += wait_time; // increment absolute time
