@@ -66,6 +66,7 @@ bool checkIfExistsClosed( vector<Path*> closed, Point possibleSuccesor){
 	return false;
 }
 
+//Using Manhattan Distance as the agent can only move up, down, right or left.
 float getDistance( float nextX, float x, float nextY, float y){
 
 	float xValue = abs( nextX - x);
@@ -78,12 +79,13 @@ float getDistance( float nextX, float x, float nextY, float y){
 
 }
 
+//Creates the possible movements and add them to their corresponding path
 Path* obtainSucessors(vector<vector<string>> matrix, vector<Path*>& open, vector<Path*> closed, Path* bestOption, Point goal){
 
 	vector<pair<int,int>> points{
-		make_pair(-1,-1),make_pair(0,-1),make_pair(1, -1),
-		make_pair(-1, 0),                make_pair(1, 0),
-		make_pair(-1, 1),make_pair(0, 1),make_pair(1, 1)
+		                 make_pair(0,-1),
+		make_pair(-1, 0),                make_pair(1, 0)
+		                ,make_pair(0, 1)
 	};
 
 	bool foundGoal = false;
@@ -146,6 +148,24 @@ Path* AStar(vector<vector<string>> matrix, Point goal, Point start){
 }
 
 
+Path* reverse(Path* path){
+
+	Path* p, *q, *r;
+
+	p = nullptr;
+	q = path;
+	r = path -> previous;
+
+	while(q){
+		q -> previous = p;
+		p = q;
+		q = r;
+		if ( r ){
+			r = r -> previous;
+		}
+	}
+	return p;
+}
 
 
 
@@ -160,12 +180,12 @@ int main() {
 		{"□","□"," "," "," ","□"," ","□"},
 		{" "," "," ","□"," ","□"," ","□"},
 		{" ","□"," ","□"," ","□"," ","□"},
-		{" ","□"," ","□"," ","□"," "," "},
+		{"□","□","□","□"," ","□"," "," "},
 		{" "," "," "," "," ","□","□"," "},
 		{" ","□","□","□","□","□"," "," "},
 		{" ","□"," ","□"," ","□","□"," "},
 		{" ","□"," ","□"," ","□"," "," "},
-		{" "," "," "," "," "," "," "," "},
+		{" "," "," "," "," "," "," ","goal"},
 	};
 
 	vector<vector<string>> copy{
@@ -177,7 +197,7 @@ int main() {
 		{"□","□"," "," "," ","□"," ","□"},
 		{" "," "," ","□"," ","□"," ","□"},
 		{" ","□"," ","□"," ","□"," ","□"},
-		{" ","□"," ","□"," ","□"," "," "},
+		{"□","□","□","□"," ","□"," "," "},
 		{" "," "," "," "," ","□","□"," "},
 		{" ","□","□","□","□","□"," "," "},
 		{" ","□"," ","□"," ","□","□"," "},
@@ -188,7 +208,7 @@ int main() {
 	Point start = Point(0,0,0,0);
    	Point goal = Point(0,0,copy.size()-1,copy[0].size()-1);
 	
-    Path* path = AStar(matrix, goal, start);
+    Path* path = reverse(AStar(matrix, goal, start));
 
  
 	while( path ){
